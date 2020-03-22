@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="en">    
+    <head>
+
+        <!-- tags -->
+        
+        
+
+
+        <!--- Basic Page Needs -->
+        <meta charset="utf-8">
+        <title>Open Learning Analytics | OU Analyse |  Knowledge Media Institute | The Open University</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">    
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <!-- CSS -->        
+        <link rel="stylesheet" href="resources/css/bootstrap/bootstrap.css"> 
+        <link rel="stylesheet" href="resources/css/erasmus.css">
+        <link rel="stylesheet" href="resources/css/open_dataset.css">
+        <link href="resources/css/font-awesome-4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+        <!-- Favicons -->
+        <link rel="icon" href="resources/images/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="resources/images/favicon.ico" type="image/x-icon" />
+
+        <!-- Compatibility solutions -->
+        <!--[if lt IE 9]>
+             <link rel="stylesheet" href="resources/css/ie8.css">
+                <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+                <script type="text/javascript" src="resources/js/libs/bootstrap/respond.js"></script>   
+                
+         <![endif]-->
+
+
+    </head>
+
+    <body role="document" data-spy="scroll" data-target="#navbar" id="body">        
+
+        <!-- Navbar -->
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="header">
+            <div class="container">
+                <div class="navbar-header">
+                    <button id="navbar-collapse-btn" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>                        
+                    </button>       
+                    <div class="col-xs-1 col-xs-offset-1 col-md-offset-0"></div>
+                    <a href="./"><img alt="" src="resources/images/project_info/top_menu_logo.png" id="logo" class="img-responsive"></a>
+                </div>
+                <div class="navbar-collapse collapse" id="navbar">
+                    <ul class="nav navbar-nav">                                                
+                        <li class="active"><a href="#about">About</a></li>                        
+                        <li><a href="#data">Data</a></li>
+                        <li><a href="#description">Data description</a></li>
+                        <li><a href="#examples">Examples</a></li>
+                        <li><a href="#rights">Rights statement and License</a></li>
+                        <!--                        <li><a href="#pubs">Publications</a></li>-->
+                        <li><a href="#contacts">Contact</a></li>
+                    </ul>                   
+
+                </div>
+            </diV>
+        </div>
+        <!-- Navbar end-->
+        <div class="container-fluid" id="about">
+            <div class="container">
+                
+                <h1>Open University Learning Analytics dataset</h1>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p class="intro">
+                            This page introduces the anonymised Open University Learning Analytics Dataset (OULAD). It contains data about courses, students and their interactions with Virtual Learning Environment (VLE) for seven selected courses (called modules). Presentations of courses start in February and October - they are marked by “B” and “J” respectively. The dataset consists of tables connected using unique identifiers. All tables are stored in the csv format.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" id="data">
+            <div class="container">
+                <h2>Data</h2>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row"><div class="col-xs-12"><p>You can download the latest version of the OULAD here:</p></div></div>
+                        <div class="row">
+                            <div class="col-sm-4 col-md-4 vcenter">
+                                <button class="btn live" id="downloadDataset" title="Download dataset" >Download dataset*</button>                                
+                            </div>
+                            <div class="qcol-sm-4 col-md-2 vcenter">
+                                <script src='https://certificates.theodi.org/datasets/26648/certificate/badge.js'
+                                        integrity="sha256-AouWFMUGoTAY9t9pzfGTZJt7BPIhx4PHUJ+CqXM4fjY="
+                                        crossorigin="anonymous"></script>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <p>* You can check integrity of downloaded zip file using the <span class="downloadMD5" id="downloadMD5">MD5 checksum</span>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid" id="oulad-testimonials">
+            <div class="container">
+                <div>
+                    <h2 style="padding-top: 20px">OULAD testimonials</h2>
+                    <div class="row">
+                        <div class="col-xs-12"><h4><a href="https://ctlt.ubc.ca/2018/03/19/learning-analytics-hackathon-3-0-explores-how-data-can-empower-students/">Learning Analytics & Open Data Hackathon 3.0</a> at the University of British Columbia, Canada</h4></div>
+                        <div class="col-xs-12">
+                            <p>
+                                The two-day event was held at the University of British Columbia, Canada. Over 100 participants dove into our dataset and experimented with it. Interesting projects in the area of social comparison and visualisation have been developed.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12"><h4><a href="https://lakhackathon.wordpress.com/">
+                            LAK18 Hackathon</a> at Learning Analytics and Knowledge conference (LAK18) in Sydney, Australia</h4></div>
+                        <div class="col-xs-12">
+                            <p>
+                                The principal aim of Hack@LAK18 was to enable multi-disciplinary thinking over key open challenges in Learning Analytics based on a problem-oriented, pragmatic approach. OULAD was one of the recommended datasets by the organisers.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <a href="/testimonials" class="btn btn-lg btn-primary btn-more-testimonials">More testimonials</a>
+            </div>
+        </div>
+
+        <div class="container-fluid" id="description">
+            <div class="container">
+                <h2>Data description</h2>
+                <div class="row">
+                    <div class="col-xs-12">
+
+                        <h3>Database schema</h3>
+                        <img src="resources/images/model.png" alt="Database schema" class="img-responsive">
+
+                        <h3>courses.csv</h3>
+                        File contains the list of all available modules and their presentations. The columns are:
+                        <ul>
+                            <li>code_module – code name of the module, which serves as the identifier.</li>
+                            <li>code_presentation – code name of the presentation. It consists of the year and “B” for the presentation starting in February and “J” for the presentation starting in October.</li>
+                            <li>length - length of the module-presentation in days.</li>
+                        </ul>
+                        The structure of B and J presentations may differ and therefore it is good practice to analyse the B and J presentations separately. Nevertheless, for some presentations the corresponding previous B/J presentation do not exist and therefore the J presentation must be used to inform the B presentation or vice versa. In the dataset this is the case of CCC, EEE and GGG modules.
+                        
+                        <h3>assessments.csv</h3>
+                        This file contains information about assessments in module-presentations. Usually, every presentation has a number of assessments followed by the final exam. CSV contains columns:
+                        <ul>
+                            <li>code_module – identification code of the module, to which the assessment belongs.</li>
+                            <li>code_presentation - identification code of the presentation, to which the assessment belongs.</li>
+                            <li>id_assessment – identification number of the assessment.</li>
+                            <li>assessment_type – type of assessment. Three types of assessments exist: Tutor Marked Assessment (TMA), Computer Marked Assessment (CMA) and Final Exam (Exam).</li>
+                            <li>date – information about the final submission date of the assessment calculated as the number of days since the start of the module-presentation. The starting date of the presentation has number 0 (zero).</li>
+                            <li>weight - weight of the assessment in %. Typically, Exams are treated separately and have the weight 100%; the sum of all other assessments is 100%.</li>
+                        </ul>
+                        If the information about the final exam date is missing, it is at the end of the last presentation  week.
+
+                        <h3>vle.csv</h3> 
+                        The csv file contains information about the available materials in the VLE. Typically these are html pages, pdf files, etc. Students have access to these materials online and their interactions with the materials are recorded. 
+                        The vle.csv file contains the following columns:
+                        <li>id_site – an identification number of the material.</li>
+                        <li>code_module – an identification code for module.</li>
+                        <li>code_presentation - the identification code of presentation.</li>
+                        <li>activity_type – the role associated with the module material.</li>
+                        <li>week_from – the week from which the material is planned to be used.</li>
+                        <li>week_to – week until which the material is planned to be used.</li>
+                        </ul>
+
+                        <h3>studentInfo.csv</h3>
+                        This file contains demographic information about the students together with their results. File contains the following columns:
+                        <ul>
+                            <li>code_module – an identification code for a module on which the student is registered.</li>
+                            <li>code_presentation - the identification code of the presentation during which the student is registered on the module.</li>
+                            <li>id_student – a unique identification number for the student.</li>
+                            <li>gender – the student’s gender.</li>
+                            <li>region – identifies the geographic region, where the student lived while taking the module-presentation.</li>
+                            <li>highest_education – highest student education level on entry to the module presentation.</li>
+                            <li>imd_band – specifies the <a href="https://en.wikipedia.org/wiki/Multiple_deprivation_index">Index of Multiple Depravation</a> band of the place where the student lived during the module-presentation.</li>
+                            <li>age_band – band of the student’s age.</li>
+                            <li>num_of_prev_attempts – the number times the student has attempted this module.</li>
+                            <li>studied_credits – the total number of credits for the modules the student is currently studying.</li>
+                            <li>disability – indicates whether the student has declared a disability.</li>
+                            <li>final_result – student’s final result in the module-presentation.</li>
+                        </ul>
+
+                        <h3>studentRegistration.csv</h3>
+                        This file contains information about the time when the student registered for the module presentation. For students who unregistered the date of unregistration is also recorded. File contains five columns:
+                        <ul>
+                            <li>code_module – an identification code for a module.</li>
+                            <li>code_presentation - the identification code of the presentation.</li>
+                            <li>id_student – a unique identification number for the student.</li>
+                            <li>date_registration – the date of student’s registration on the module presentation, this is the number of days measured relative to the start of the module-presentation (e.g. the negative value -30 means that the student registered to module presentation 30 days before it started).</li>
+                            <li>date_unregistration – date of student unregistration from the module presentation, this is the number of days measured relative to the start of the module-presentation. Students, who completed the course have this field empty.  Students who unregistered have Withdrawal as the value of the final_result column in the studentInfo.csv file.</li>
+                        </ul>
+
+                        <h3>studentAssessment.csv</h3>
+                        This file contains the results of students’ assessments. If the student does not submit the assessment, no result is recorded. The final exam submissions is missing, if the result of the assessments is not stored in the system. 
+                        This file contains the following columns:
+                        <ul>
+                            <li>id_assessment – the identification number of the assessment.</li>
+                            <li>id_student – a unique identification number for the student.</li>
+                            <li>date_submitted – the date of student submission, measured as the number of days since the start of the module presentation.</li>
+                            <li>is_banked – a status flag indicating that the assessment result has been transferred from a previous presentation.</li>
+                            <li>score – the student’s score in this assessment. The range is from 0 to 100. The score lower than 40 is interpreted as Fail. The marks are in the range from 0 to 100.</li>
+                        </ul>
+
+                        <h3>studentVle.csv</h3>
+                        The studentVle.csv file contains information about each student’s interactions with the materials in the VLE. 
+                        This file contains the following columns:
+                        <ul>
+                            <li>code_module – an identification code for a module.</li>
+                            <li>code_presentation - the identification code of the module presentation.</li>
+                            <li>id_student – a unique identification number for the student.</li>
+                            <li>id_site  - an identification number for the VLE material.</li>
+                            <li>date – the date of student’s interaction with the material measured as the number of days since the start of the module-presentation.</li>
+                            <li>sum_click – the number of times a student interacts with the material in that day.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" id="examples">
+            <div class="container">
+                <h2>Examples</h2>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h3>Open Data Mashup 2015</h3>
+                        <span>Example usage of dataset demonstrated on a small subset of data created for the <a href="https://elevator.jisc.ac.uk/e/open-data-mashup-challenge/about">Open Data Mashup 2015</a> in London:</span><br>
+                        <ul>
+                            <li> <a href="resources/documents/mashupExample.pdf">Document describing a Mashup example</a> (in pdf format)</li>
+                            <li> <a href="resources/documents/mashupData.RData">Example subset of OULAD</a> (in .Rdata format)</li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" id="rights">
+            <div class="container">
+                <h2>Rights statement and License</h2>
+                <div class="row">
+                    <div class="col-xs-12">
+
+                        <h3>License</h3>
+                        <p>This dataset is released under <a href="https://creativecommons.org/licenses/by/4.0/" title="CC-BY license">CC-BY 4.0</a> license.</p>
+                        <h3>Citing the dataset</h3>
+                        <p>
+                            When citing the dataset please use the following reference:<br><br>
+                            Kuzilek J., Hlosta M., Zdrahal Z.
+                            <a href="https://www.nature.com/articles/sdata2017171">
+                                Open University Learning Analytics dataset                      
+                            </a>
+                            Sci. Data 4:170171 doi: 10.1038/sdata.2017.171 (2017).<br>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" id="contacts">
+            <div class="container">
+                <h3>Contact</h3>
+                <div class="row"><div class="col-sm-6">                        
+                        Dataset administrators:
+                        <ul>
+                            <li>Jakub Kuzilek <a href="mailto:Jakub.Kuzilek@open.ac.uk" title="Jakub.Kuzilek@open.ac.uk" data-toggle="tooltip"><i class="fa fa-envelope " id="contacts"></i></a></li>
+                            <li>Martin Hlosta <a href="mailto:Martin.Hlosta@open.ac.uk" title="Martin.Hlosta@open.ac.uk" data-toggle="tooltip"><i class="fa fa-envelope " id="contacts"></i></a></li>
+                            <li>Zdenek Zdrahal <a href="mailto:Zdenek.Zdrahal@open.ac.uk" title="Zdenek.Zdrahal@open.ac.uk" data-toggle="tooltip"><i class="fa fa-envelope " id="contacts"></i></a></li>
+                        </ul>
+
+                    </div>
+
+                    <div class="col-sm-6">  
+                        <address>                            
+                            Knowledge Media Institute ,<br>
+                            The Open University,<br>
+                            Milton Keynes,<br>
+                            MK7 6AA,<br>
+                            United Kingdom.
+                        </address>
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+
+        <!--
+                <div class="container-fluid" id="about">
+                    <div class="container text-center">
+                        <div class="row">
+                            <h1>Coming soon</h1>
+                            <p>
+                                Currently we are working hard on preparing the anonymised dataset from The Open University. This unique dataset will allow everyone to access the data about 
+                                the students and enable what we call Open Learning Analytics. <span class="highlight">Stay tuned.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>-->
+
+
+
+
+
+
+        <footer>
+
+        </footer>
+
+
+        <!-- Java Script -->
+        <script type="text/javascript" language="javascript" src="resources/js/libs/jQuery/jquery-3.4.1.js"></script>
+        <script src="resources/js/libs/jQuery/smoothscrolling.js"></script>
+
+
+
+        <script type="text/javascript">
+            var analyseContext = {};
+            analyseContext.basePath = /(.*?)(?:\s|$)/.exec(location)[1];
+        </script>
+
+        <script type="text/javascript" language="javascript" src="resources/js/libs/open_dataset.js"></script>
+
+        <!-- bootstrap -->
+        <script type="text/javascript" src="resources/js/libs/bootstrap/bootstrap.js"></script>       
+
+        <!-- Google Analytics -->
+        <!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+
+    
+        ga('create', 'UA-50045409-1', 'open.ac.uk');
+//        ga('require', 'outboundLinkTracker');
+        ga('send', 'pageview');
+    
+    
+//            ga('create', 'UA-50045409-2', 'open.ac.uk');
+//            ga('send', 'pageview');
+    
+    
+ 
+    
+
+
+</script>
+
+
+    </body>
+</html>
