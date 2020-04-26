@@ -6,7 +6,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_predict
+from sklearn.metrics import confusion_matrix, recall_score, precision_score
+
 
 ASSESSMENTS_FPATH = os.path.join(os.getcwd(), 'data', 'assessments.csv')
 COURSES_FPATH = os.path.join(os.getcwd(), 'data', 'courses.csv')
@@ -160,8 +164,45 @@ def age_band_association(student_info):
     print('########################################################################')
 
 
-# def transform_for_model(data):
-    # cat_data = data[['gender','imd_band','highest_education',]]
+def join_tables(student_info):
+    stud_reg = pd.read_csv(STUDENT_REG_FPATH)
+    courses = pd.read_csv(COURSES_FPATH)
+    merged = pd.merge(student_info, courses, on=[
+        'code_module', 'code_presentation'])
+    merged = pd.merge(merged, stud_reg, on=[
+        'id_student', 'code_presentation', 'code_module'])
+    return merged
+
+
+def transform_for_model(data):
+    features = data.drop('final_result', axis=1)
+    labels = list(data['final_result'])
+    cat_features = features[['gender', 'imd_band',
+                             'highest_education',
+                             'age_band', 'region', 'disability']]
+    num_features = features[['num_of_prev_attempts', 'studied_credits',
+                             'module_presentation_length',
+                             'date_registration']]
+    unreg_feature = features[['date_unregistration']]
+    num_pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler())
+    ])
+    unreg_pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='constant', fill_value=0)),
+        ('scaler', StandardScaler())
+    ])
+    cat_pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='most_frequent')),
+        ('enc', OneHotEncoder())
+    ])
+    comp_pipe = ColumnTransformer([
+        ('num', num_pipeline, list(num_features)),
+        ('reg', unreg_pipeline, list(unreg_feature)),
+        ('cat', cat_pipeline, list(cat_features))
+    ])
+    prep_data = comp_pipe.fit_transform(features)
+    return (prep_data, labels)
 
 
 def process_data():
@@ -169,18 +210,30 @@ def process_data():
     train_set, test_set = train_test_split(
         student_info, test_size=0.2, random_state=42,
         stratify=student_info['highest_education'])
-    assess_mark_corr(train_set)
-    prev_attempts_corr(train_set)
-    stud_credits_corr(train_set)
-    course_length_corr(train_set)
-    reg_data_corr(train_set)
-    unreg_data_corr(train_set)
-    gender_association(train_set)
-    imd_association(train_set)
-    higher_ed_association(train_set)
-    region_association(train_set)
-    disability_association(train_set)
-    age_band_association(train_set)
+    # data analysis
+    # assess_mark_corr(train_set)
+    # prev_attempts_corr(train_set)
+    # stud_credits_corr(train_set)
+    # course_length_corr(train_set)
+    # reg_data_corr(train_set)
+    # unreg_data_corr(train_set)
+    # gender_association(train_set)
+    # imd_association(train_set)
+    # higher_ed_association(train_set)
+    # region_association(train_set)
+    # disability_association(train_set)
+    # age_band_association(train_set)
+    joined = join_tables(train_set)
+    data, labels = transform_for_model(joined)
+    for_class = RandomForestClassifier()
+    predict = cross_val_predict(
+        for_class, data, labels, cv=10)
+    confuse = confusion_matrix(labels, predict)
+    precision = precision_score(labels, predict, average='micro')
+    recall = recall_score(labels, predict, average='micro')
+    print('Confusion Matrix:')
+    print(confuse)
+    print('Preicision=', precision, '\nrecall=', recall)
 
 
 process_data()
