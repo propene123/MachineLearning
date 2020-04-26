@@ -125,7 +125,8 @@ def disability_association(student_info):
 def process_data():
     student_info = pd.read_csv(STUDENT_INFO_FPATH)
     train_set, test_set = train_test_split(
-        student_info, test_size=0.2, random_state=42, stratify=student_info['highest_education'])
+        student_info, test_size=0.2, random_state=42,
+        stratify=student_info['highest_education'])
     assess_mark_corr(train_set)
     prev_attempts_corr(train_set)
     stud_credits_corr(train_set)
