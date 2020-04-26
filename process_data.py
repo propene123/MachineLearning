@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 
 ASSESSMENTS_FPATH = os.path.join(os.getcwd(), 'data', 'assessments.csv')
 COURSES_FPATH = os.path.join(os.getcwd(), 'data', 'courses.csv')
@@ -17,7 +21,8 @@ VLE_FPATH = os.path.join(os.getcwd(), 'data', 'vle.csv')
 
 def ordinal_final_result(student_info):
     mod_res = student_info.sort_values(by=['id_student'])
-    mod_res = mod_res[mod_res['final_result'] != 'Withdrawn'][['final_result']]
+    mod_res = mod_res[['final_result']]
+    mod_res.loc[mod_res['final_result'] == 'Withdrawn', 'final_result'] = 0
     mod_res.loc[mod_res['final_result'] == 'Fail', 'final_result'] = 1
     mod_res.loc[mod_res['final_result'] == 'Pass', 'final_result'] = 2
     mod_res.loc[mod_res['final_result'] == 'Distinction', 'final_result'] = 3
@@ -29,24 +34,49 @@ def assess_mark_corr(student_info):
     stud_assess = pd.read_csv(STUDENT_ASSESS_FPATH)
     assess = pd.read_csv(ASSESSMENTS_FPATH)
     stud_assess = pd.merge(stud_assess, assess, on='id_assessment')
-    non_withdraw = student_info[student_info['final_result'] != 'Withdrawn'][[
-        'id_student', 'code_module', 'code_presentation']]
-    stud_assess_merged = pd.merge(non_withdraw, stud_assess, on=[
+    features = student_info[['id_student', 'code_module', 'code_presentation']]
+    stud_assess_merged = pd.merge(features, stud_assess, on=[
         'id_student', 'code_module', 'code_presentation'], how='left')
     stud_assess_merged = stud_assess_merged.fillna(0)
     stud_assess_merged = stud_assess_merged.groupby(
         ['id_student', 'code_module', 'code_presentation'])['score'].sum()
+    stud_assess_merged.fillna(0, inplace=True)
     res = stats.spearmanr(stud_assess_merged, mod_res)
     print('Correlation between total assessment mark for module and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
     print('########################################################################')
 
 
+def reg_data_corr(student_info):
+    mod_res = ordinal_final_result(student_info)
+    stud_reg = pd.read_csv(STUDENT_REG_FPATH)
+    features = pd.merge(student_info, stud_reg, on=[
+        'id_student', 'code_module', 'code_presentation'])
+    features = features.sort_values(by=['id_student'])
+    features.fillna(0, inplace=True)
+    res = stats.spearmanr(features[['date_registration']], mod_res)
+    print('Correlation between registration date and module result')
+    print('Coefficient=', res[0], '\np_value=', res[1])
+    print('########################################################################')
+
+
+def unreg_data_corr(student_info):
+    mod_res = ordinal_final_result(student_info)
+    stud_reg = pd.read_csv(STUDENT_REG_FPATH)
+    features = pd.merge(student_info, stud_reg, on=[
+        'id_student', 'code_module', 'code_presentation'])
+    features = features.sort_values(by=['id_student'])
+    features.fillna(0, inplace=True)
+    res = stats.spearmanr(features[['date_unregistration']], mod_res)
+    print('Correlation between de-registration date and module result')
+    print('Coefficient=', res[0], '\np_value=', res[1])
+    print('########################################################################')
+
+
 def prev_attempts_corr(student_info):
     mod_res = ordinal_final_result(student_info)
-    non_withdraw = student_info[student_info['final_result'] != 'Withdrawn']
-    non_withdraw = non_withdraw.sort_values(by=['id_student'])
-    res = stats.spearmanr(non_withdraw[['num_of_prev_attempts']], mod_res)
+    sort_data = student_info.sort_values(by=['id_student'])
+    res = stats.spearmanr(sort_data[['num_of_prev_attempts']], mod_res)
     print('Correlation between previous module attempts and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
     print('########################################################################')
@@ -54,9 +84,8 @@ def prev_attempts_corr(student_info):
 
 def stud_credits_corr(student_info):
     mod_res = ordinal_final_result(student_info)
-    non_withdraw = student_info[student_info['final_result'] != 'Withdrawn']
-    non_withdraw = non_withdraw.sort_values(by=['id_student'])
-    res = stats.spearmanr(non_withdraw[['studied_credits']], mod_res)
+    sort_data = student_info.sort_values(by=['id_student'])
+    res = stats.spearmanr(sort_data[['studied_credits']], mod_res)
     print('Correlation between studied credits for module and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
     print('########################################################################')
@@ -65,12 +94,11 @@ def stud_credits_corr(student_info):
 def course_length_corr(student_info):
     mod_res = ordinal_final_result(student_info)
     courses = pd.read_csv(COURSES_FPATH)
-    non_withdraw = student_info[student_info['final_result'] != 'Withdrawn']
-    non_withdraw = pd.merge(non_withdraw, courses, on=[
-                            'code_presentation', 'code_module'])
-    non_withdraw = non_withdraw.sort_values(by=['id_student'])
+    features = pd.merge(student_info, courses, on=[
+        'code_presentation', 'code_module'])
+    features = features.sort_values(by=['id_student'])
     res = stats.spearmanr(
-        non_withdraw[['module_presentation_length']], mod_res)
+        features[['module_presentation_length']], mod_res)
     print('Correlation between course length and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
     print('########################################################################')
@@ -122,6 +150,20 @@ def disability_association(student_info):
     print('########################################################################')
 
 
+def age_band_association(student_info):
+    freq = student_info[['age_band', 'final_result']]
+    freq = student_info.groupby(
+        ['age_band', 'final_result']).size().unstack()
+    res = stats.chi2_contingency(freq)
+    print('Association between age and module result')
+    print('Test stat=', res[0], '\np_value=', res[1])
+    print('########################################################################')
+
+
+# def transform_for_model(data):
+    # cat_data = data[['gender','imd_band','highest_education',]]
+
+
 def process_data():
     student_info = pd.read_csv(STUDENT_INFO_FPATH)
     train_set, test_set = train_test_split(
@@ -131,12 +173,14 @@ def process_data():
     prev_attempts_corr(train_set)
     stud_credits_corr(train_set)
     course_length_corr(train_set)
+    reg_data_corr(train_set)
+    unreg_data_corr(train_set)
     gender_association(train_set)
     imd_association(train_set)
     higher_ed_association(train_set)
     region_association(train_set)
     disability_association(train_set)
-    print(train_set)
+    age_band_association(train_set)
 
 
 process_data()
