@@ -1,6 +1,5 @@
 import os
 import joblib
-import numpy as np
 import pandas as pd
 from scipy import stats
 from sklearn.model_selection import train_test_split
@@ -9,8 +8,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import cross_val_predict, GridSearchCV
-from sklearn.metrics import confusion_matrix, recall_score, precision_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import precision_score
 
 
 ASSESSMENTS_FPATH = os.path.join(os.getcwd(), 'data', 'assessments.csv')
@@ -47,9 +46,11 @@ def assess_mark_corr(student_info):
         ['id_student', 'code_module', 'code_presentation'])['score'].sum()
     stud_assess_merged.fillna(0, inplace=True)
     res = stats.spearmanr(stud_assess_merged, mod_res)
-    print('Correlation between total assessment mark for module and module result')
+    print('Correlation between total assessment mark for module and module' +
+          ' result')
     print('Coefficient=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def reg_data_corr(student_info):
@@ -62,7 +63,8 @@ def reg_data_corr(student_info):
     res = stats.spearmanr(features[['date_registration']], mod_res)
     print('Correlation between registration date and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def unreg_data_corr(student_info):
@@ -75,7 +77,8 @@ def unreg_data_corr(student_info):
     res = stats.spearmanr(features[['date_unregistration']], mod_res)
     print('Correlation between de-registration date and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def prev_attempts_corr(student_info):
@@ -84,7 +87,8 @@ def prev_attempts_corr(student_info):
     res = stats.spearmanr(sort_data[['num_of_prev_attempts']], mod_res)
     print('Correlation between previous module attempts and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def stud_credits_corr(student_info):
@@ -93,7 +97,8 @@ def stud_credits_corr(student_info):
     res = stats.spearmanr(sort_data[['studied_credits']], mod_res)
     print('Correlation between studied credits for module and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def course_length_corr(student_info):
@@ -106,7 +111,8 @@ def course_length_corr(student_info):
         features[['module_presentation_length']], mod_res)
     print('Correlation between course length and module result')
     print('Coefficient=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def gender_association(student_info):
@@ -115,7 +121,8 @@ def gender_association(student_info):
     res = stats.chi2_contingency(freq)
     print('Association between gender and module result')
     print('Test stat=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def imd_association(student_info):
@@ -124,7 +131,8 @@ def imd_association(student_info):
     res = stats.chi2_contingency(freq)
     print('Association between imd and module result')
     print('Test stat=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def higher_ed_association(student_info):
@@ -133,7 +141,8 @@ def higher_ed_association(student_info):
     res = stats.chi2_contingency(freq)
     print('Association between highest education level and module result')
     print('Test stat=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def region_association(student_info):
@@ -142,7 +151,8 @@ def region_association(student_info):
     res = stats.chi2_contingency(freq)
     print('Association between student region and module result')
     print('Test stat=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def disability_association(student_info):
@@ -152,7 +162,8 @@ def disability_association(student_info):
     res = stats.chi2_contingency(freq)
     print('Association between disability and module result')
     print('Test stat=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def age_band_association(student_info):
@@ -162,7 +173,8 @@ def age_band_association(student_info):
     res = stats.chi2_contingency(freq)
     print('Association between age and module result')
     print('Test stat=', res[0], '\np_value=', res[1])
-    print('########################################################################')
+    print('################################################################' +
+          '########')
 
 
 def join_tables(student_info):
@@ -178,6 +190,35 @@ def join_tables(student_info):
 def transform_for_model(data):
     features = data.drop('final_result', axis=1)
     labels = list(data['final_result'])
+    # cat_features = features[['gender', 'imd_band',
+    # 'highest_education',
+    # 'age_band', 'region', 'disability']]
+    # num_features = features[['num_of_prev_attempts', 'studied_credits',
+    # 'module_presentation_length',
+    # 'date_registration']]
+    # unreg_feature = features[['date_unregistration']]
+    # num_pipeline = Pipeline([
+    # ('imputer', SimpleImputer(strategy='median')),
+    # ('scaler', StandardScaler())
+    # ])
+    # unreg_pipeline = Pipeline([
+    # ('imputer', SimpleImputer(strategy='constant', fill_value=999)),
+    # ('scaler', StandardScaler())
+    # ])
+    # cat_pipeline = Pipeline([
+    # ('imputer', SimpleImputer(strategy='most_frequent')),
+    # ('enc', OneHotEncoder())
+    # ])
+    # comp_pipe = ColumnTransformer([
+    # ('num', num_pipeline, list(num_features)),
+    # ('reg', unreg_pipeline, list(unreg_feature)),
+    # ('cat', cat_pipeline, list(cat_features))
+    # ])
+    # prep_data = comp_pipe.fit_transform(features)
+    return (features, labels)
+
+
+def create_data_pipe(features):
     cat_features = features[['gender', 'imd_band',
                              'highest_education',
                              'age_band', 'region', 'disability']]
@@ -202,30 +243,29 @@ def transform_for_model(data):
         ('reg', unreg_pipeline, list(unreg_feature)),
         ('cat', cat_pipeline, list(cat_features))
     ])
-    prep_data = comp_pipe.fit_transform(features)
-    return (prep_data, labels)
+    return comp_pipe
 
 
-def process_data():
-    student_info = pd.read_csv(STUDENT_INFO_FPATH)
-    train_set, test_set = train_test_split(
-        student_info, test_size=0.2, random_state=42,
-        stratify=student_info['highest_education'])
+def process_data(train_set):
     # data analysis
-    # assess_mark_corr(train_set)
-    # prev_attempts_corr(train_set)
-    # stud_credits_corr(train_set)
-    # course_length_corr(train_set)
-    # reg_data_corr(train_set)
-    # unreg_data_corr(train_set)
-    # gender_association(train_set)
-    # imd_association(train_set)
-    # higher_ed_association(train_set)
-    # region_association(train_set)
-    # disability_association(train_set)
-    # age_band_association(train_set)
+    assess_mark_corr(train_set)
+    prev_attempts_corr(train_set)
+    stud_credits_corr(train_set)
+    course_length_corr(train_set)
+    reg_data_corr(train_set)
+    unreg_data_corr(train_set)
+    gender_association(train_set)
+    imd_association(train_set)
+    higher_ed_association(train_set)
+    region_association(train_set)
+    disability_association(train_set)
+    age_band_association(train_set)
+
+
+def train_forest(train_set):
     joined = join_tables(train_set)
-    data, labels = transform_for_model(joined)
+    features, labels = transform_for_model(joined)
+    data_pipe = create_data_pipe(features)
     for_class = RandomForestClassifier()
     params = [
         {'n_estimators': [55], 'max_features':[5]},
@@ -233,14 +273,50 @@ def process_data():
     g_search = GridSearchCV(for_class, params, cv=10, scoring=[
                             'precision_micro', 'recall_micro'],
                             return_train_score=True, refit='precision_micro')
-    g_search.fit(data, labels)
-    print(g_search.best_params_)
-    results = g_search.cv_results_
+    forest_pipe = Pipeline([
+        ('data_pipe', data_pipe),
+        ('grid', g_search)
+    ])
+    forest_pipe.fit(features, labels)
+    print(forest_pipe['grid'].best_params_)
+    results = forest_pipe['grid'].cv_results_
     res_tuple = zip(results['mean_test_precision_micro'],
                     results['mean_test_recall_micro'], results['params'])
     for prec, rec, params in res_tuple:
         print('Prec=', prec, 'Recall=', rec, 'Params=', params)
-    joblib.dump(g_search.best_estimator_, 'random_forest.joblib')
+    save_model(forest_pipe, 'forest_pipe.pkl')
+    return forest_pipe
 
 
-process_data()
+def train_svc(train_set):
+    pass
+
+
+def test_model(model, test_data):
+    joined = join_tables(test_data)
+    features, labels = transform_for_model(joined)
+    preds = model.predict(features)
+    precision = precision_score(labels, preds, average='micro')
+    print('Precision=', precision)
+
+
+def save_model(model, name):
+    joblib.dump(model, name)
+
+
+def load_model(name):
+    model = joblib.load(name)
+    return model
+
+
+def main():
+    student_info = pd.read_csv(STUDENT_INFO_FPATH)
+    train_set, test_set = train_test_split(
+        student_info, test_size=0.2, random_state=42,
+        stratify=student_info['highest_education'])
+    # process_data(train_set)
+    # rand_forest = train_forest(train_set)
+    # test_model(rand_forest, test_set)
+
+
+main()
