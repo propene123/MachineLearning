@@ -1,15 +1,18 @@
 import os
 import joblib
 import pandas as pd
+import matplotlib.pyplot as plt
 from scipy import stats
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import precision_score
+from sklearn.metrics import precision_score, accuracy_score
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+from sklearn.svm import LinearSVC
 
 
 ASSESSMENTS_FPATH = os.path.join(os.getcwd(), 'data', 'assessments.csv')
@@ -190,41 +193,16 @@ def join_tables(student_info):
 def transform_for_model(data):
     features = data.drop('final_result', axis=1)
     labels = list(data['final_result'])
-    # cat_features = features[['gender', 'imd_band',
-    # 'highest_education',
-    # 'age_band', 'region', 'disability']]
-    # num_features = features[['num_of_prev_attempts', 'studied_credits',
-    # 'module_presentation_length',
-    # 'date_registration']]
-    # unreg_feature = features[['date_unregistration']]
-    # num_pipeline = Pipeline([
-    # ('imputer', SimpleImputer(strategy='median')),
-    # ('scaler', StandardScaler())
-    # ])
-    # unreg_pipeline = Pipeline([
-    # ('imputer', SimpleImputer(strategy='constant', fill_value=999)),
-    # ('scaler', StandardScaler())
-    # ])
-    # cat_pipeline = Pipeline([
-    # ('imputer', SimpleImputer(strategy='most_frequent')),
-    # ('enc', OneHotEncoder())
-    # ])
-    # comp_pipe = ColumnTransformer([
-    # ('num', num_pipeline, list(num_features)),
-    # ('reg', unreg_pipeline, list(unreg_feature)),
-    # ('cat', cat_pipeline, list(cat_features))
-    # ])
-    # prep_data = comp_pipe.fit_transform(features)
     return (features, labels)
 
 
 def create_data_pipe(features):
-    cat_features = features[['gender', 'imd_band',
-                             'highest_education',
+    cat_features = features[['gender', 'highest_education',
                              'age_band', 'region', 'disability']]
     num_features = features[['num_of_prev_attempts', 'studied_credits',
                              'module_presentation_length',
                              'date_registration']]
+    imd_features = features[['imd_band']]
     unreg_feature = features[['date_unregistration']]
     num_pipeline = Pipeline([
         ('imputer', SimpleImputer(strategy='median')),
@@ -238,10 +216,15 @@ def create_data_pipe(features):
         ('imputer', SimpleImputer(strategy='most_frequent')),
         ('enc', OneHotEncoder())
     ])
+    imd_pipe = Pipeline([
+        ('imputer', SimpleImputer(strategy='most_frequent')),
+        ('enc', OrdinalEncoder())
+    ])
     comp_pipe = ColumnTransformer([
         ('num', num_pipeline, list(num_features)),
         ('reg', unreg_pipeline, list(unreg_feature)),
-        ('cat', cat_pipeline, list(cat_features))
+        ('cat', cat_pipeline, list(cat_features)),
+        ('imd', imd_pipe, list(imd_features))
     ])
     return comp_pipe
 
@@ -268,7 +251,7 @@ def train_forest(train_set):
     data_pipe = create_data_pipe(features)
     for_class = RandomForestClassifier()
     params = [
-        {'n_estimators': [55], 'max_features':[5]},
+        {'n_estimators': [50], 'max_features':[5]},
     ]
     g_search = GridSearchCV(for_class, params, cv=10, scoring=[
                             'precision_micro', 'recall_micro'],
@@ -289,15 +272,44 @@ def train_forest(train_set):
 
 
 def train_svc(train_set):
-    pass
+    joined = join_tables(train_set)
+    features, labels = transform_for_model(joined)
+    data_pipe = create_data_pipe(features)
+    svc = LinearSVC()
+    params = [
+        {'C': [0.1], 'dual':[False]},
+    ]
+    g_search = GridSearchCV(svc, params, cv=10, scoring=[
+                            'precision_micro', 'recall_micro'],
+                            return_train_score=True, refit='precision_micro')
+    svc_pipe = Pipeline([
+        ('data_pipe', data_pipe),
+        ('grid', g_search)
+    ])
+    svc_pipe.fit(features, labels)
+    print(svc_pipe['grid'].best_params_)
+    results = svc_pipe['grid'].cv_results_
+    res_tuple = zip(results['mean_test_precision_micro'],
+                    results['mean_test_recall_micro'], results['params'])
+    for prec, rec, params in res_tuple:
+        print('Prec=', prec, 'Recall=', rec, 'Params=', params)
+    save_model(svc_pipe, 'svc_pipe.pkl')
+    return svc_pipe
 
 
-def test_model(model, test_data):
+def test_model(model, test_data, name):
     joined = join_tables(test_data)
     features, labels = transform_for_model(joined)
     preds = model.predict(features)
     precision = precision_score(labels, preds, average='micro')
-    print('Precision=', precision)
+    accuracy = accuracy_score(labels, preds)
+    conf = confusion_matrix(labels, preds)
+    conf_plot = plot_confusion_matrix(model, features, labels, normalize=None,
+                          values_format='.9g', cmap=plt.cm.Blues)
+    conf_plot.ax_.set_title(name)
+    print('Precision=', precision, '\nAccuracy=', accuracy)
+    print('Confusion Matrix:')
+    print(conf)
 
 
 def save_model(model, name):
@@ -315,8 +327,11 @@ def main():
         student_info, test_size=0.2, random_state=42,
         stratify=student_info['highest_education'])
     # process_data(train_set)
-    # rand_forest = train_forest(train_set)
-    # test_model(rand_forest, test_set)
+    rand_forest = train_forest(train_set)
+    test_model(rand_forest, test_set, 'Forest')
+    svc = train_svc(train_set)
+    test_model(svc, test_set, 'SVC')
+    plt.show()
 
 
 main()
