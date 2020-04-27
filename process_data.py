@@ -1,4 +1,5 @@
 import os
+import joblib
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -8,7 +9,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import cross_val_predict
+from sklearn.model_selection import cross_val_predict, GridSearchCV
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
 
 
@@ -189,7 +190,7 @@ def transform_for_model(data):
         ('scaler', StandardScaler())
     ])
     unreg_pipeline = Pipeline([
-        ('imputer', SimpleImputer(strategy='constant', fill_value=0)),
+        ('imputer', SimpleImputer(strategy='constant', fill_value=999)),
         ('scaler', StandardScaler())
     ])
     cat_pipeline = Pipeline([
@@ -226,14 +227,20 @@ def process_data():
     joined = join_tables(train_set)
     data, labels = transform_for_model(joined)
     for_class = RandomForestClassifier()
-    predict = cross_val_predict(
-        for_class, data, labels, cv=10)
-    confuse = confusion_matrix(labels, predict)
-    precision = precision_score(labels, predict, average='micro')
-    recall = recall_score(labels, predict, average='micro')
-    print('Confusion Matrix:')
-    print(confuse)
-    print('Preicision=', precision, '\nrecall=', recall)
+    params = [
+        {'n_estimators': [55], 'max_features':[5]},
+    ]
+    g_search = GridSearchCV(for_class, params, cv=10, scoring=[
+                            'precision_micro', 'recall_micro'],
+                            return_train_score=True, refit='precision_micro')
+    g_search.fit(data, labels)
+    print(g_search.best_params_)
+    results = g_search.cv_results_
+    res_tuple = zip(results['mean_test_precision_micro'],
+                    results['mean_test_recall_micro'], results['params'])
+    for prec, rec, params in res_tuple:
+        print('Prec=', prec, 'Recall=', rec, 'Params=', params)
+    joblib.dump(g_search.best_estimator_, 'random_forest.joblib')
 
 
 process_data()
