@@ -305,7 +305,7 @@ def test_model(model, test_data, name):
     accuracy = accuracy_score(labels, preds)
     conf = confusion_matrix(labels, preds)
     conf_plot = plot_confusion_matrix(model, features, labels, normalize=None,
-                          values_format='.9g', cmap=plt.cm.Blues)
+                                      values_format='.9g', cmap=plt.cm.Blues)
     conf_plot.ax_.set_title(name)
     print('Precision=', precision, '\nAccuracy=', accuracy)
     print('Confusion Matrix:')
