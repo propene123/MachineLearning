@@ -336,7 +336,7 @@ def train_forest(train_set):
     # parameters for grid search hyperparamter tuning
     # only optimal values are here as I have already carried out the tuning
     params = [
-        {'n_estimators': [50], 'max_features':[5]},
+        {'n_estimators': [54], 'max_features':[3]},
     ]
     # create grid search using micro averaged precision as scoring measure
     g_search = GridSearchCV(for_class, params, cv=10, scoring=[
@@ -374,7 +374,7 @@ def train_svc(train_set):
     # hyperparamters for grid search, only optimal values here as
     # hyperparamter tuning has already been done
     params = [
-        {'C': [0.1], 'dual':[False]},
+        {'C': [0.11], 'dual':[False]},
     ]
     # grid search with micro averaged precision as scoring metric
     g_search = GridSearchCV(svc, params, cv=10, scoring=[
