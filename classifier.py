@@ -327,6 +327,7 @@ def process_data(train_set):
 
 # train the random forrest classifier on a training set
 def train_forest(train_set):
+    print('Training random forest')
     # get features and labels from training set
     joined = join_tables(train_set)
     features, labels = transform_for_model(joined)
@@ -365,6 +366,7 @@ def train_forest(train_set):
 
 # train support vector classifier model on training set
 def train_svc(train_set):
+    print('Training SVC')
     joined = join_tables(train_set)
     # get features and labels from train set
     features, labels = transform_for_model(joined)
@@ -402,6 +404,7 @@ def train_svc(train_set):
 
 # test model on test set
 def test_model(model, test_data, name):
+    print('Testing',name,'on test set')
     joined = join_tables(test_data)
     # get features and labels from test set
     features, labels = transform_for_model(joined)
